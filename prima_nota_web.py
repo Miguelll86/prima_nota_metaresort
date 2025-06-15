@@ -28,6 +28,57 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     `;
     document.head.appendChild(style);
+    
+    // Rimuovi dinamicamente il footer e altri elementi Streamlit
+    function removeStreamlitElements() {
+        // Rimuovi footer
+        const footers = document.querySelectorAll('footer');
+        footers.forEach(footer => footer.remove());
+        
+        // Rimuovi header
+        const headers = document.querySelectorAll('header');
+        headers.forEach(header => header.remove());
+        
+        // Rimuovi menu principale
+        const mainMenu = document.getElementById('MainMenu');
+        if (mainMenu) mainMenu.remove();
+        
+        // Rimuovi elementi di decorazione
+        const decorations = document.querySelectorAll('[data-testid="stDecoration"]');
+        decorations.forEach(el => el.remove());
+        
+        // Rimuovi toolbar
+        const toolbars = document.querySelectorAll('[data-testid="stToolbar"]');
+        toolbars.forEach(el => el.remove());
+        
+        // Rimuovi status widget
+        const statusWidgets = document.querySelectorAll('[data-testid="stStatusWidget"]');
+        statusWidgets.forEach(el => el.remove());
+        
+        // Rimuovi deploy button
+        const deployButtons = document.querySelectorAll('.stDeployButton');
+        deployButtons.forEach(btn => btn.remove());
+    }
+    
+    // Esegui immediatamente
+    removeStreamlitElements();
+    
+    // Esegui anche dopo un breve delay per elementi che si caricano dopo
+    setTimeout(removeStreamlitElements, 1000);
+    
+    // Osserva cambiamenti nel DOM per rimuovere elementi che appaiono dinamicamente
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.addedNodes.length > 0) {
+                removeStreamlitElements();
+            }
+        });
+    });
+    
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
 });
 </script>
 """, unsafe_allow_html=True)
@@ -35,10 +86,23 @@ document.addEventListener('DOMContentLoaded', function() {
 # --- Forza tema scuro ---
 st.markdown("""
 <style>
-/* Nascondi il footer "Created with Streamlit" */
-#MainMenu {visibility: hidden;}
-footer {visibility: hidden;}
-header {visibility: hidden;}
+/* Nascondi completamente il footer "Created with Streamlit" */
+footer {display: none !important;}
+#MainMenu {display: none !important;}
+header {display: none !important;}
+
+/* Nascondi anche altri elementi di branding Streamlit */
+.stDeployButton {display: none !important;}
+.stApp > footer {display: none !important;}
+.stApp > header {display: none !important;}
+
+/* Nascondi il menu hamburger */
+#MainMenu {visibility: hidden !important;}
+
+/* Nascondi il footer con approccio più specifico */
+div[data-testid="stDecoration"] {display: none !important;}
+div[data-testid="stToolbar"] {display: none !important;}
+div[data-testid="stStatusWidget"] {display: none !important;}
 
 /* Forza tema scuro */
 [data-testid="stAppViewContainer"] {
