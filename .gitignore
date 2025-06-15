@@ -1,0 +1,32 @@
+# File sensibili
+*.env
+.env
+secrets.toml
+.secrets.toml
+generate_passwords.py
+
+# File di dati (CSV, allegati)
+*.csv
+allegati_*/
+backup_*/
+
+# File temporanei
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log 

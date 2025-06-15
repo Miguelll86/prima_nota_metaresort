@@ -141,15 +141,10 @@ def get_users():
     try:
         return st.secrets.passwords
     except:
-        # Fallback per sviluppo locale
-        return {
-            "admin": "$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj3QJ/8qHqKi",  # password123
-            "utente": "$2b$12$8K1p/a0dL1LXMIgoEDFrwOe6J7K8K1p/a0dL1LXMIgoEDFrwOe6J7",  # demo
-            "SACHIN": "$2b$12$meta2026_hash_here",
-            "MICHELE": "$2b$12$meta2026_hash_here", 
-            "SANDRA": "$2b$12$meta2026_hash_here",
-            "SEDE": "$2b$12$meta2026_hash_here"
-        }
+        # Fallback per sviluppo locale - SOLO PER TEST
+        # In produzione, configurare sempre i secrets
+        st.error("⚠️ Configurazione utenti non trovata. Configura i secrets in Streamlit Cloud.")
+        return {}
 
 # --- Inizializzazione session state ---
 if 'logged_in' not in st.session_state:
