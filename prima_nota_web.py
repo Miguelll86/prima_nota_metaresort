@@ -8,69 +8,63 @@ st.set_page_config(
 # --- Configurazione tema scuro per Streamlit ---
 st.markdown("""
 <script>
-// Forza tema scuro per Streamlit
-document.addEventListener('DOMContentLoaded', function() {
-    // Imposta il tema scuro
-    const html = document.documentElement;
-    html.setAttribute('data-theme', 'dark');
+// Rimozione aggressiva del footer e altri elementi Streamlit
+function removeAllStreamlitElements() {
+    // Rimuovi tutti i possibili footer
+    const footers = document.querySelectorAll('footer, .footer, [data-testid="stDecoration"], [data-testid="stToolbar"], [data-testid="stStatusWidget"]');
+    footers.forEach(el => {
+        el.style.display = 'none !important';
+        el.style.visibility = 'hidden !important';
+        el.remove();
+    });
     
-    // Rimuovi eventuali classi di tema chiaro
-    html.classList.remove('light');
-    html.classList.add('dark');
+    // Rimuovi header e menu
+    const headers = document.querySelectorAll('header, #MainMenu, .stDeployButton');
+    headers.forEach(el => {
+        el.style.display = 'none !important';
+        el.style.visibility = 'hidden !important';
+        el.remove();
+    });
     
-    // Forza il tema scuro anche per i componenti Streamlit
-    const style = document.createElement('style');
-    style.textContent = `
-        :root {
-            --background-color: #0e1117 !important;
-            --text-color: #fafafa !important;
-            --primary-color: #ffc107 !important;
+    // Rimuovi elementi con classi specifiche di Streamlit
+    const streamlitElements = document.querySelectorAll('.stApp > footer, .stApp > header, .stApp > .stDeployButton');
+    streamlitElements.forEach(el => {
+        el.style.display = 'none !important';
+        el.style.visibility = 'hidden !important';
+        el.remove();
+    });
+    
+    // Rimuovi elementi con attributi data-testid
+    const testElements = document.querySelectorAll('[data-testid*="st"]');
+    testElements.forEach(el => {
+        if (el.getAttribute('data-testid').includes('Decoration') || 
+            el.getAttribute('data-testid').includes('Toolbar') || 
+            el.getAttribute('data-testid').includes('StatusWidget')) {
+            el.style.display = 'none !important';
+            el.style.visibility = 'hidden !important';
+            el.remove();
         }
-    `;
-    document.head.appendChild(style);
+    });
+}
+
+// Esegui immediatamente
+removeAllStreamlitElements();
+
+// Esegui dopo il caricamento del DOM
+document.addEventListener('DOMContentLoaded', function() {
+    removeAllStreamlitElements();
     
-    // Rimuovi dinamicamente il footer e altri elementi Streamlit
-    function removeStreamlitElements() {
-        // Rimuovi footer
-        const footers = document.querySelectorAll('footer');
-        footers.forEach(footer => footer.remove());
-        
-        // Rimuovi header
-        const headers = document.querySelectorAll('header');
-        headers.forEach(header => header.remove());
-        
-        // Rimuovi menu principale
-        const mainMenu = document.getElementById('MainMenu');
-        if (mainMenu) mainMenu.remove();
-        
-        // Rimuovi elementi di decorazione
-        const decorations = document.querySelectorAll('[data-testid="stDecoration"]');
-        decorations.forEach(el => el.remove());
-        
-        // Rimuovi toolbar
-        const toolbars = document.querySelectorAll('[data-testid="stToolbar"]');
-        toolbars.forEach(el => el.remove());
-        
-        // Rimuovi status widget
-        const statusWidgets = document.querySelectorAll('[data-testid="stStatusWidget"]');
-        statusWidgets.forEach(el => el.remove());
-        
-        // Rimuovi deploy button
-        const deployButtons = document.querySelectorAll('.stDeployButton');
-        deployButtons.forEach(btn => btn.remove());
-    }
+    // Esegui anche dopo un delay
+    setTimeout(removeAllStreamlitElements, 100);
+    setTimeout(removeAllStreamlitElements, 500);
+    setTimeout(removeAllStreamlitElements, 1000);
+    setTimeout(removeAllStreamlitElements, 2000);
     
-    // Esegui immediatamente
-    removeStreamlitElements();
-    
-    // Esegui anche dopo un breve delay per elementi che si caricano dopo
-    setTimeout(removeStreamlitElements, 1000);
-    
-    // Osserva cambiamenti nel DOM per rimuovere elementi che appaiono dinamicamente
+    // Observer per rimuovere elementi che appaiono dinamicamente
     const observer = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
             if (mutation.addedNodes.length > 0) {
-                removeStreamlitElements();
+                removeAllStreamlitElements();
             }
         });
     });
@@ -79,6 +73,17 @@ document.addEventListener('DOMContentLoaded', function() {
         childList: true,
         subtree: true
     });
+    
+    // Controlla periodicamente
+    setInterval(removeAllStreamlitElements, 1000);
+});
+
+// Forza tema scuro
+document.addEventListener('DOMContentLoaded', function() {
+    const html = document.documentElement;
+    html.setAttribute('data-theme', 'dark');
+    html.classList.remove('light');
+    html.classList.add('dark');
 });
 </script>
 """, unsafe_allow_html=True)
@@ -86,28 +91,120 @@ document.addEventListener('DOMContentLoaded', function() {
 # --- Forza tema scuro ---
 st.markdown("""
 <style>
-/* Nascondi completamente il footer "Created with Streamlit" */
-footer {display: none !important;}
-#MainMenu {display: none !important;}
-header {display: none !important;}
+/* Rimozione COMPLETA del footer e altri elementi Streamlit */
+footer, .footer, [data-testid="stDecoration"], [data-testid="stToolbar"], [data-testid="stStatusWidget"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    width: 0 !important;
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
+    z-index: -9999 !important;
+}
 
-/* Nascondi anche altri elementi di branding Streamlit */
-.stDeployButton {display: none !important;}
-.stApp > footer {display: none !important;}
-.stApp > header {display: none !important;}
+/* Rimozione header e menu */
+header, #MainMenu, .stDeployButton {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    width: 0 !important;
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
+    z-index: -9999 !important;
+}
 
-/* Nascondi il menu hamburger */
-#MainMenu {visibility: hidden !important;}
+/* Rimozione elementi specifici dell'app Streamlit */
+.stApp > footer, .stApp > header, .stApp > .stDeployButton {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    width: 0 !important;
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
+    z-index: -9999 !important;
+}
 
-/* Nascondi il footer con approccio più specifico */
-div[data-testid="stDecoration"] {display: none !important;}
-div[data-testid="stToolbar"] {display: none !important;}
-div[data-testid="stStatusWidget"] {display: none !important;}
+/* Nascondi anche elementi con classi generiche che potrebbero essere il footer */
+div[class*="footer"], div[class*="Footer"], div[class*="FOOTER"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    width: 0 !important;
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
+    z-index: -9999 !important;
+}
 
 /* Forza tema scuro */
 [data-testid="stAppViewContainer"] {
     background-color: #0e1117 !important;
     color: #fafafa !important;
+}
+
+/* Rimozione ULTRA-AGGRESSIVA per Streamlit Cloud */
+/* Nascondi TUTTI i possibili footer */
+footer, .footer, [data-testid*="footer"], [data-testid*="Footer"], [data-testid*="FOOTER"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    width: 0 !important;
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
+    z-index: -9999 !important;
+    pointer-events: none !important;
+    user-select: none !important;
+}
+
+/* Nascondi elementi con testo "Created with Streamlit" */
+*:contains("Created with Streamlit"), 
+*:contains("created with streamlit"),
+*:contains("Made with Streamlit"),
+*:contains("made with streamlit") {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    width: 0 !important;
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
+    z-index: -9999 !important;
+}
+
+/* Nascondi elementi con link a streamlit.io */
+a[href*="streamlit.io"], a[href*="streamlit.com"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    width: 0 !important;
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
+    z-index: -9999 !important;
+}
+
+/* Nascondi elementi con classi che contengono "streamlit" */
+[class*="streamlit"], [class*="Streamlit"], [class*="STREAMLIT"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    width: 0 !important;
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
+    z-index: -9999 !important;
 }
 
 /* Stile per il sidebar */
