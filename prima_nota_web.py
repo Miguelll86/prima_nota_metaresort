@@ -35,6 +35,11 @@ document.addEventListener('DOMContentLoaded', function() {
 # --- Forza tema scuro ---
 st.markdown("""
 <style>
+/* Nascondi il footer "Created with Streamlit" */
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+header {visibility: hidden;}
+
 /* Forza tema scuro */
 [data-testid="stAppViewContainer"] {
     background-color: #0e1117 !important;
