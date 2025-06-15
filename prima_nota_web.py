@@ -1,5 +1,171 @@
 import streamlit as st
-st.set_page_config(page_title="Prima Nota Multi-Struttura", layout="wide")
+st.set_page_config(
+    page_title="Prima Nota Multi-Struttura", 
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+# --- Configurazione tema scuro per Streamlit ---
+st.markdown("""
+<script>
+// Forza tema scuro per Streamlit
+document.addEventListener('DOMContentLoaded', function() {
+    // Imposta il tema scuro
+    const html = document.documentElement;
+    html.setAttribute('data-theme', 'dark');
+    
+    // Rimuovi eventuali classi di tema chiaro
+    html.classList.remove('light');
+    html.classList.add('dark');
+    
+    // Forza il tema scuro anche per i componenti Streamlit
+    const style = document.createElement('style');
+    style.textContent = `
+        :root {
+            --background-color: #0e1117 !important;
+            --text-color: #fafafa !important;
+            --primary-color: #ffc107 !important;
+        }
+    `;
+    document.head.appendChild(style);
+});
+</script>
+""", unsafe_allow_html=True)
+
+# --- Forza tema scuro ---
+st.markdown("""
+<style>
+/* Forza tema scuro */
+[data-testid="stAppViewContainer"] {
+    background-color: #0e1117 !important;
+    color: #fafafa !important;
+}
+
+/* Stile per il sidebar */
+[data-testid="stSidebar"] {
+    background-color: #262730 !important;
+    color: #fafafa !important;
+}
+
+/* Stile per i widget */
+.stTextInput input, .stTextArea textarea, .stSelectbox select {
+    background-color: #262730 !important;
+    color: #fafafa !important;
+    border: 1px solid #4a4a4a !important;
+}
+
+.stTextInput input:focus, .stTextArea textarea:focus, .stSelectbox select:focus {
+    border-color: #ffc107 !important;
+    box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25) !important;
+}
+
+/* Stile per i pulsanti */
+.stButton > button {
+    background-color: #ffc107 !important;
+    color: #000000 !important;
+    border: none !important;
+}
+
+.stButton > button:hover {
+    background-color: #e0a800 !important;
+    color: #000000 !important;
+}
+
+/* Stile per le metriche */
+[data-testid="metric-container"] {
+    background-color: #262730 !important;
+    border: 1px solid #4a4a4a !important;
+}
+
+/* Stile per i form */
+[data-testid="stForm"] {
+    background-color: #262730 !important;
+    border: 1px solid #4a4a4a !important;
+    padding: 1rem !important;
+    border-radius: 0.5rem !important;
+}
+
+/* Stile per i checkbox */
+.stCheckbox > label {
+    color: #fafafa !important;
+}
+
+/* Stile per i file uploader */
+.stFileUploader > div {
+    background-color: #262730 !important;
+    border: 1px solid #4a4a4a !important;
+}
+
+/* Stile per i messaggi di successo/errore */
+.stSuccess {
+    background-color: #1e3a1e !important;
+    color: #4ade80 !important;
+    border: 1px solid #4ade80 !important;
+}
+
+.stError {
+    background-color: #3a1e1e !important;
+    color: #f87171 !important;
+    border: 1px solid #f87171 !important;
+}
+
+.stWarning {
+    background-color: #3a2e1e !important;
+    color: #fbbf24 !important;
+    border: 1px solid #fbbf24 !important;
+}
+
+.stInfo {
+    background-color: #1e2a3a !important;
+    color: #60a5fa !important;
+    border: 1px solid #60a5fa !important;
+}
+
+/* Stile per la tabella AgGrid */
+.ag-theme-streamlit {
+    background-color: #262730 !important;
+    color: #fafafa !important;
+}
+
+.ag-theme-streamlit .ag-header {
+    background-color: #1e1e1e !important;
+    color: #fafafa !important;
+}
+
+.ag-theme-streamlit .ag-row {
+    background-color: #262730 !important;
+    color: #fafafa !important;
+}
+
+.ag-theme-streamlit .ag-row:nth-child(even) {
+    background-color: #2d2d2d !important;
+}
+
+.ag-theme-streamlit .ag-row:hover {
+    background-color: #3a3a3a !important;
+}
+
+.ag-theme-streamlit .ag-cell {
+    border-color: #4a4a4a !important;
+}
+
+/* Stile per i placeholder */
+.stTextInput input::placeholder,
+.stTextArea textarea::placeholder {
+    color: #888888 !important;
+}
+
+/* Stile per i link */
+a {
+    color: #ffc107 !important;
+}
+
+a:hover {
+    color: #e0a800 !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
 import pandas as pd
 from datetime import datetime
 import os
@@ -143,8 +309,15 @@ def get_users():
     except:
         # Fallback per sviluppo locale - SOLO PER TEST
         # In produzione, configurare sempre i secrets
-        st.error("⚠️ Configurazione utenti non trovata. Configura i secrets in Streamlit Cloud.")
-        return {}
+        st.warning("⚠️ Configurazione utenti non trovata. Usando fallback per sviluppo locale.")
+        return {
+            "admin": "$2b$12$3./452a2o8XPnjsitV4edOKQXqVk3x6gCtthnau.Iurb2bNEehp2m",  # password123
+            "utente": "$2b$12$Gb0CjzbLB24QH1J5Yng74eQI0aCENfLyKZKUz2/NWmCyRFRCM.dWe",  # demo
+            "SACHIN": "$2b$12$7MtmYNXn.xHoaXNLBL253u1jrEB4PziNyndAva5bVtr.q.cQRlw0W",  # meta2026
+            "MICHELE": "$2b$12$cOPiR9FDWXaX795c6CggdOTxBCOoXqNxNAMexfsLSTK.ZBZPtFic.",  # meta2026
+            "SANDRA": "$2b$12$Pe5gJFB1EIhqVnWS6UMp9eRXOjqA9/4rB7jzVxxmt1thYkdTTVwkO",  # meta2026
+            "SEDE": "$2b$12$CfqzPG0pRI5QHQIXGOob8O11/q.rYM5WP0hVT2nVPbmWpxBctNdxC"  # meta2026
+        }
 
 # --- Inizializzazione session state ---
 if 'logged_in' not in st.session_state:
